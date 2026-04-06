@@ -6,6 +6,6 @@ def get_connection():
         database="schemasync",
         user="postgres",
         password="pk876232kdm@HNR",
-        port="5432",
+        port=5432,
         sslmode="require"
     )
