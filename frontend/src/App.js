@@ -7,7 +7,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
 
-  // 🔹 Format timestamp (NEW)
+  // 🔹 Format timestamp
   const formatTime = (filename) => {
     const raw = filename.replace("schema_", "").replace(".json", "");
 
@@ -112,6 +112,16 @@ function App() {
               <pre key={index}>{sql}</pre>
             ))}
           </div>
+
+          {/* 🤖 AI SUGGESTION */}
+          {result.llm_suggestion && (
+            <div className="card">
+              <h3>🤖 AI Migration Suggestion</h3>
+              <pre style={{ whiteSpace: "pre-wrap" }}>
+                {result.llm_suggestion}
+              </pre>
+            </div>
+          )}
 
         </div>
       )}
