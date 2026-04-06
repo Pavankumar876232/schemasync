@@ -1,0 +1,8 @@
+{
+    "users": {
+        "name": "character varying",
+        "salary": "integer",
+        "id": "integer",
+        "age": "integer"
+    }
+}

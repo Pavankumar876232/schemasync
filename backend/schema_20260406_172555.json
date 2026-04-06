@@ -1,0 +1,9 @@
+{
+    "users": {
+        "bonus": "integer",
+        "name": "character varying",
+        "salary": "integer",
+        "id": "integer",
+        "age": "integer"
+    }
+}
