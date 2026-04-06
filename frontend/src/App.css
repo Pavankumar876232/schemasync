@@ -47,3 +47,37 @@ button:hover {
 .results {
   margin-top: 20px;
 }
+.results {
+  display: grid;
+  gap: 20px;
+}
+
+ul {
+  padding-left: 20px;
+}
+
+.badge {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  color: white;
+}
+
+.badge.safe {
+  background: #4CAF50;
+}
+
+.badge.breaking {
+  background: #f44336;
+}
+
+.badge.warning {
+  background: #ff9800;
+}
+
+pre {
+  background: #222;
+  color: #0f0;
+  padding: 10px;
+  border-radius: 5px;
+}

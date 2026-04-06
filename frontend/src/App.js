@@ -21,6 +21,7 @@ function App() {
       const data = await response.json();
       setResult(data);
     } catch (error) {
+      console.error(error);
       alert("Invalid JSON or backend error");
     } finally {
       setLoading(false);
@@ -33,9 +34,9 @@ function App() {
 
       {/* INPUT CARD */}
       <div className="card">
-        <h3>Enter Schema</h3>
+        <h3>📥 Enter Schema</h3>
         <textarea
-          placeholder="Paste schema JSON..."
+          placeholder='Paste schema JSON here...'
           value={schema}
           onChange={(e) => setSchema(e.target.value)}
         />
@@ -47,20 +48,35 @@ function App() {
       {/* RESULTS */}
       {result && (
         <div className="results">
-          
+
+          {/* DIFF */}
           <div className="card">
             <h3>📊 Diff</h3>
-            <pre>{JSON.stringify(result.diff, null, 2)}</pre>
+            <ul>
+              <li><b>Added:</b> {result.diff.added.join(", ") || "None"}</li>
+              <li><b>Removed:</b> {result.diff.removed.join(", ") || "None"}</li>
+              <li><b>Modified:</b> {result.diff.modified.join(", ") || "None"}</li>
+            </ul>
           </div>
 
+          {/* COMPATIBILITY */}
           <div className="card">
             <h3>⚠️ Compatibility</h3>
-            <pre>{JSON.stringify(result.compatibility, null, 2)}</pre>
+            {result.compatibility.length === 0 && <p>No issues</p>}
+            {result.compatibility.map((item, index) => (
+              <div key={index} className={`badge ${item.status.toLowerCase()}`}>
+                <strong>{item.column}</strong> → {item.status}
+              </div>
+            ))}
           </div>
 
+          {/* SQL */}
           <div className="card">
             <h3>🧾 Migration SQL</h3>
-            <pre>{JSON.stringify(result.migration_sql, null, 2)}</pre>
+            {result.migration_sql.length === 0 && <p>No changes</p>}
+            {result.migration_sql.map((sql, index) => (
+              <pre key={index}>{sql}</pre>
+            ))}
           </div>
 
         </div>
