@@ -7,6 +7,20 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
 
+  // 🔹 Format timestamp (NEW)
+  const formatTime = (filename) => {
+    const raw = filename.replace("schema_", "").replace(".json", "");
+
+    const year = raw.slice(0, 4);
+    const month = raw.slice(4, 6);
+    const day = raw.slice(6, 8);
+    const hour = raw.slice(9, 11);
+    const min = raw.slice(11, 13);
+    const sec = raw.slice(13, 15);
+
+    return `${day}/${month}/${year} ${hour}:${min}:${sec}`;
+  };
+
   // 🔹 Compare API
   const runCompare = async () => {
     try {
@@ -108,7 +122,7 @@ function App() {
           <h3>📦 Schema Timeline</h3>
           {history.map((item, index) => (
             <div key={index} className="timeline-item">
-              🟢 {item.replace("schema_", "").replace(".json", "")}
+              🟢 Schema updated at {formatTime(item)}
             </div>
           ))}
         </div>
