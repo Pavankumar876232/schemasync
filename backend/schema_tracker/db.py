@@ -1,6 +1,7 @@
 import psycopg2
+import os
 
 def get_connection():
     return psycopg2.connect(
-        "postgresql://postgres:[YOUR-PASSWORD]@db.xxdgfjmnjdhcxkihyuzk.supabase.co:5432/postgres"
+        os.environ.get("DATABASE_URL")
     )
