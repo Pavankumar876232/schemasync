@@ -22,5 +22,9 @@ def get_all_versions():
         return []
 
     files = os.listdir(FOLDER)
-    files.sort(reverse=True)
-    return files
+
+    # ✅ FILTER ONLY JSON FILES
+    schema_files = [f for f in files if f.endswith(".json")]
+
+    schema_files.sort(reverse=True)
+    return schema_files
