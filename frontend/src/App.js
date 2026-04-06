@@ -1,11 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css";
+import supabase from "./supabase";
 
 function App() {
   const [schema, setSchema] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
+
+  // 🔐 AUTH STATE
+  const [user, setUser] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  // 🔹 Track session
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user || null);
+    });
+
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user || null);
+    });
+  }, []);
+
+  // 🔹 AUTH FUNCTIONS
+  const signUp = async () => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password
+    });
+    if (error) alert(error.message);
+    else alert("Signup successful! Now login.");
+  };
+
+  const login = async () => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+    if (error) alert(error.message);
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+  };
 
   // 🔹 Format timestamp
   const formatTime = (filename) => {
@@ -37,7 +76,6 @@ function App() {
       const data = await response.json();
       setResult(data);
     } catch (error) {
-      console.error(error);
       alert("Invalid JSON or backend error");
     } finally {
       setLoading(false);
@@ -49,21 +87,49 @@ function App() {
     try {
       const res = await fetch("https://schemasync.onrender.com/history");
       const data = await res.json();
-      setHistory(data.versions);
+      setHistory(data.versions || []);
     } catch (error) {
       alert("Error loading history");
     }
   };
 
+  // 🔐 LOGIN SCREEN
+  if (!user) {
+    return (
+      <div className="container">
+        <h2>🔐 Login</h2>
+
+        <input
+          type="email"
+          placeholder="Email"
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          onChange={(e) => setPassword(e.target.value)}
+        />
+
+        <button onClick={login}>Login</button>
+        <button onClick={signUp}>Sign Up</button>
+      </div>
+    );
+  }
+
+  // 🔓 MAIN APP
   return (
     <div className="container">
       <h1>🚀 SchemaSync Dashboard</h1>
+
+      <p>👤 Logged in as: {user.email}</p>
+      <button onClick={logout}>Logout</button>
 
       {/* INPUT */}
       <div className="card">
         <h3>📥 Enter Schema</h3>
         <textarea
-          placeholder='Paste schema JSON here...'
+          placeholder="Paste schema JSON here..."
           value={schema}
           onChange={(e) => setSchema(e.target.value)}
         />
@@ -113,7 +179,7 @@ function App() {
             ))}
           </div>
 
-          {/* 🤖 AI SUGGESTION */}
+          {/* 🤖 AI */}
           {result.llm_suggestion && (
             <div className="card">
               <h3>🤖 AI Migration Suggestion</h3>
