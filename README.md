@@ -23,76 +23,68 @@ Automatically generates SQL queries:
 
 ALTER TABLE users ADD COLUMN age INTEGER;
 🤖 AI Migration Suggestions
-Uses AI to:
 Analyze schema changes
-Suggest safer migrations
-Explain impact of changes
+Suggest safe migrations
+Explain impact
 📦 Schema History (Per User)
 Stores schema versions
-Displays timeline of changes
-User-specific data isolation
+Displays timeline
+User-specific data
 🔐 Authentication
-Secure login/signup using Supabase Auth
-Each user has their own schema history
+Login/signup using Supabase
+Separate user data
 🛠️ Tech Stack
 Frontend
 React.js
 CSS
-Deployed on Vercel
+Vercel
 Backend
 FastAPI (Python)
 PostgreSQL (Supabase)
 psycopg2
-AI Integration
+AI
 OpenAI API
-Deployment
-Frontend → Vercel
-Backend → Render
-Database → Supabase
 📂 Project Structure
 schemasync/
-│
 ├── backend/
 │   ├── app.py
 │   ├── migration.py
 │   ├── schema_versions/
 │   │   └── store.py
 │   └── requirements.txt
-│
 ├── frontend/
 │   ├── src/
 │   │   ├── App.js
 │   │   ├── supabase.js
 │   │   └── App.css
 │   └── package.json
-│
 └── README.md
 ⚙️ Setup Instructions
-1️⃣ Clone Repository
+Clone
 git clone https://github.com/Pavankumar876232/schemasync.git
 cd schemasync
-2️⃣ Backend Setup
+Backend
 cd backend
 pip install -r requirements.txt
 
-Create .env file:
+Create .env:
 
 DATABASE_URL=your_supabase_connection_string
 OPENAI_API_KEY=your_openai_api_key
 
-Run backend:
+Run:
 
 uvicorn app:app --reload
-3️⃣ Frontend Setup
+Frontend
 cd frontend
 npm install
 npm start
-📡 API Endpoints
+📡 API
 Method	Endpoint	Description
-GET	/	Health check
-GET	/schema	Fetch DB schema
-POST	/compare	Compare schemas
-POST	/history	Get user schema history
+GET	/	Health
+GET	/schema	Get schema
+POST	/compare	Compare
+POST	/history	History
 🧪 Example Input
 {
   "users": {
@@ -103,14 +95,13 @@ POST	/history	Get user schema history
 }
 📸 Screenshots
 
-Add your UI screenshots here (very important for recruiters)
+Add screenshots here (important)
 
 🚀 Future Improvements
-Schema visualization (ER diagram)
-Rollback SQL generation
-Multi-database support
-Team collaboration features
-Advanced AI suggestions
+Schema visualizer
+Rollback SQL
+Multi-DB support
+Team collaboration
 👨‍💻 Author
 
 Pavankumar B
@@ -118,19 +109,13 @@ Pavankumar B
 LinkedIn: https://www.linkedin.com/in/pavankumar-b-6754b9265
 Email: pavanbabunaik631@gmail.com
 ⭐ Why This Project Matters
-
-This project demonstrates:
-
 Full-stack development
-API design with FastAPI
-Database integration
-AI integration in real-world use case
-Authentication & multi-user system
-Cloud deployment (Vercel + Render + Supabase)
+FastAPI backend
+AI integration
+Authentication system
+Cloud deployment
 ⭐ Support
 
-If you found this useful:
-
-⭐ Star this repository
+⭐ Star this repo
 🔁 Share it
-💡 Use it in your projects
+💡 Use it
