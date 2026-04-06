@@ -81,3 +81,9 @@ pre {
   padding: 10px;
   border-radius: 5px;
 }
+.timeline-item {
+  padding: 8px;
+  border-left: 4px solid #4CAF50;
+  margin: 10px 0;
+  background: #f9f9f9;
+}

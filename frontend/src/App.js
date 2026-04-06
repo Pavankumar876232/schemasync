@@ -5,7 +5,9 @@ function App() {
   const [schema, setSchema] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [history, setHistory] = useState([]);
 
+  // 🔹 Compare API
   const runCompare = async () => {
     try {
       setLoading(true);
@@ -28,11 +30,22 @@ function App() {
     }
   };
 
+  // 🔹 Load History
+  const loadHistory = async () => {
+    try {
+      const res = await fetch("https://schemasync.onrender.com/history");
+      const data = await res.json();
+      setHistory(data.versions);
+    } catch (error) {
+      alert("Error loading history");
+    }
+  };
+
   return (
     <div className="container">
       <h1>🚀 SchemaSync Dashboard</h1>
 
-      {/* INPUT CARD */}
+      {/* INPUT */}
       <div className="card">
         <h3>📥 Enter Schema</h3>
         <textarea
@@ -40,9 +53,16 @@ function App() {
           value={schema}
           onChange={(e) => setSchema(e.target.value)}
         />
-        <button onClick={runCompare}>
-          {loading ? "Processing..." : "Run Compare"}
-        </button>
+
+        <div style={{ display: "flex", gap: "10px" }}>
+          <button onClick={runCompare}>
+            {loading ? "Processing..." : "Run Compare"}
+          </button>
+
+          <button onClick={loadHistory}>
+            Load History
+          </button>
+        </div>
       </div>
 
       {/* RESULTS */}
@@ -79,6 +99,18 @@ function App() {
             ))}
           </div>
 
+        </div>
+      )}
+
+      {/* TIMELINE */}
+      {history.length > 0 && (
+        <div className="card">
+          <h3>📦 Schema Timeline</h3>
+          {history.map((item, index) => (
+            <div key={index} className="timeline-item">
+              🟢 {item.replace("schema_", "").replace(".json", "")}
+            </div>
+          ))}
         </div>
       )}
     </div>
