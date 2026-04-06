@@ -3,12 +3,15 @@ from fastapi.middleware.cors import CORSMiddleware
 import psycopg2
 import os
 
-# NEW IMPORT
+# ✅ History
 from schema_versions.store import save_schema, get_all_versions
+
+# ✅ AI (LLM)
+from llm.migration import generate_migration
 
 app = FastAPI()
 
-# ✅ CORS
+# ✅ CORS (for frontend)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,7 +29,7 @@ def get_connection():
 def home():
     return {"message": "SchemaSync Running"}
 
-# ✅ Get current schema
+# ✅ Get schema
 @app.get("/schema")
 def get_schema():
     conn = get_connection()
@@ -51,7 +54,7 @@ def get_schema():
     return schema
 
 
-# ✅ Compare + SAVE VERSION
+# ✅ Compare API (MAIN)
 @app.post("/compare")
 async def compare_schema(request: Request):
     new_schema = await request.json()
@@ -75,7 +78,7 @@ async def compare_schema(request: Request):
             current_schema[table] = {}
         current_schema[table][column] = dtype
 
-    # --- DIFF LOGIC ---
+    # --- DIFF ---
     added = []
     removed = []
     modified = []
@@ -124,7 +127,7 @@ async def compare_schema(request: Request):
             "message": "Column type changed"
         })
 
-    # --- MIGRATION SQL ---
+    # --- BASIC SQL ---
     migration_sql = []
 
     for table in new_schema:
@@ -134,17 +137,25 @@ async def compare_schema(request: Request):
                     f"ALTER TABLE {table} ADD COLUMN {col} {dtype};"
                 )
 
-    # ✅ SAVE VERSION (NEW FEATURE)
+    # ✅ SAVE HISTORY
     save_schema(new_schema)
 
+    # ✅ AI GENERATION (NEW)
+    try:
+        llm_output = generate_migration(diff)
+    except Exception as e:
+        llm_output = f"LLM Error: {str(e)}"
+
+    # ✅ FINAL RESPONSE
     return {
         "diff": diff,
         "compatibility": compatibility,
-        "migration_sql": migration_sql
+        "migration_sql": migration_sql,
+        "llm_suggestion": llm_output
     }
 
 
-# ✅ HISTORY API (NEW)
+# ✅ HISTORY API
 @app.get("/history")
 def history():
     return {
