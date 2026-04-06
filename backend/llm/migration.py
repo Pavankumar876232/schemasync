@@ -12,13 +12,15 @@ Given schema diff:
 {diff}
 
 Generate:
-1. Safe SQL migration
+1. SQL migration
 2. Explanation
 """
 
         response = client.chat.completions.create(
             model="gpt-4o-mini",
-            messages=[{"role": "user", "content": prompt}]
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
         )
 
         return response.choices[0].message.content
