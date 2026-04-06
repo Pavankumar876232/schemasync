@@ -3,9 +3,12 @@ from fastapi.middleware.cors import CORSMiddleware
 import psycopg2
 import os
 
+# NEW IMPORT
+from schema_versions.store import save_schema, get_all_versions
+
 app = FastAPI()
 
-# ✅ CORS (IMPORTANT for frontend connection)
+# ✅ CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -18,12 +21,12 @@ app.add_middleware(
 def get_connection():
     return psycopg2.connect(os.environ.get("DATABASE_URL"))
 
-# ✅ Home route
+# ✅ Home
 @app.get("/")
 def home():
     return {"message": "SchemaSync Running"}
 
-# ✅ Get current DB schema
+# ✅ Get current schema
 @app.get("/schema")
 def get_schema():
     conn = get_connection()
@@ -47,7 +50,8 @@ def get_schema():
 
     return schema
 
-# ✅ Compare schema (FIXED → POST)
+
+# ✅ Compare + SAVE VERSION
 @app.post("/compare")
 async def compare_schema(request: Request):
     new_schema = await request.json()
@@ -130,8 +134,19 @@ async def compare_schema(request: Request):
                     f"ALTER TABLE {table} ADD COLUMN {col} {dtype};"
                 )
 
+    # ✅ SAVE VERSION (NEW FEATURE)
+    save_schema(new_schema)
+
     return {
         "diff": diff,
         "compatibility": compatibility,
         "migration_sql": migration_sql
+    }
+
+
+# ✅ HISTORY API (NEW)
+@app.get("/history")
+def history():
+    return {
+        "versions": get_all_versions()
     }
