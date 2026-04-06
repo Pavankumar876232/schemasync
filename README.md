@@ -1,91 +1,80 @@
-🚀 SchemaSync – AI-Powered Database Migration Assistant
+# 🚀 SchemaSync — Distributed Schema Evolution Manager
 
-SchemaSync is a full-stack web application that helps developers compare database schemas, detect changes, and generate safe migration scripts using AI.
+## 📌 Overview
 
-🌐 Live Demo
-🔗 Frontend: https://schemasync-five.vercel.app
-🔗 Backend API: https://schemasync.onrender.com
-📌 Features
-🔍 Schema Comparison
-Detects:
-Added columns
-Removed columns
-Modified columns
-Works with PostgreSQL (Supabase)
-⚠️ Compatibility Analysis
-Classifies schema changes:
-✅ SAFE
-⚠️ WARNING
-❌ BREAKING
-🧾 Migration SQL Generator
+SchemaSync is a full-stack system that tracks database schema changes, detects differences, evaluates compatibility, and generates SQL migration scripts automatically.
 
-Automatically generates SQL queries:
+It helps developers avoid breaking changes and safely evolve database schemas across applications.
 
-ALTER TABLE users ADD COLUMN age INTEGER;
-🤖 AI Migration Suggestions
-Analyze schema changes
-Suggest safe migrations
-Explain impact
-📦 Schema History (Per User)
-Stores schema versions
-Displays timeline
-User-specific data
-🔐 Authentication
-Login/signup using Supabase
-Separate user data
-🛠️ Tech Stack
-Frontend
-React.js
-CSS
-Vercel
-Backend
-FastAPI (Python)
-PostgreSQL (Supabase)
-psycopg2
-AI
-OpenAI API
-📂 Project Structure
-schemasync/
-├── backend/
-│   ├── app.py
-│   ├── migration.py
-│   ├── schema_versions/
-│   │   └── store.py
-│   └── requirements.txt
-├── frontend/
-│   ├── src/
-│   │   ├── App.js
-│   │   ├── supabase.js
-│   │   └── App.css
-│   └── package.json
-└── README.md
-⚙️ Setup Instructions
-Clone
-git clone https://github.com/Pavankumar876232/schemasync.git
-cd schemasync
-Backend
-cd backend
-pip install -r requirements.txt
+---
 
-Create .env:
+## 🧠 Problem Statement
 
-DATABASE_URL=your_supabase_connection_string
-OPENAI_API_KEY=your_openai_api_key
+Managing database schema changes manually is risky and error-prone.
 
-Run:
+* ❌ Breaking changes can crash production systems
+* ❌ Manual SQL migrations are tedious
+* ❌ No visibility into schema evolution
 
-uvicorn app:app --reload
-Frontend
-cd frontend
-npm install
-npm start
-📡 API
-Method	Endpoint	Description
-GET	/	Health
-GET	/schema	Get schema
-POST	/compare	Compare
-POST	/history	History
-🧪 Example Input
+---
+
+## ✅ Solution
+
+SchemaSync automates schema management by:
+
+* Extracting current database schema
+* Comparing with new schema input
+* Detecting added, removed, and modified fields
+* Classifying changes (SAFE / BREAKING / WARNING)
+* Generating SQL migration scripts automatically
+
+---
+
+## 🏗️ Architecture
+
+```
+Frontend (React - Vercel)
+        ↓
+Backend (FastAPI - Render)
+        ↓
+Database (PostgreSQL - Supabase)
+```
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer      | Technology               |
+| ---------- | ------------------------ |
+| Frontend   | React                    |
+| Backend    | FastAPI                  |
+| Database   | PostgreSQL               |
+| Deployment | Render, Vercel, Supabase |
+| Language   | Python, JavaScript       |
+
+---
+
+## ✨ Features
+
+* 🔍 Schema extraction from PostgreSQL
+* 🔄 Schema diff detection
+* ⚠️ Compatibility analysis (SAFE / BREAKING / WARNING)
+* 🧾 Automatic SQL migration generation
+* 🌐 Web-based dashboard
+* ☁️ Fully deployed cloud system
+
+---
+
+## 📸 Demo
+
+👉 Live Demo: https://schemasync-five.vercel.app
+👉 Backend API: https://schemasync.onrender.com
+
+---
+
+## 🧪 Example Input
+
+```json
 {
   "users": {
     "id": "integer",
@@ -93,29 +82,107 @@ POST	/history	History
     "age": "integer"
   }
 }
-📸 Screenshots
+```
 
-Add screenshots here (important)
+---
 
-🚀 Future Improvements
-Schema visualizer
-Rollback SQL
-Multi-DB support
-Team collaboration
-👨‍💻 Author
+## 📤 Example Output
 
-Pavankumar B
+```json
+{
+  "diff": {
+    "added": ["age"],
+    "removed": [],
+    "modified": []
+  },
+  "compatibility": [
+    {
+      "column": "age",
+      "status": "SAFE",
+      "message": "New column added"
+    }
+  ],
+  "migration_sql": [
+    "ALTER TABLE users ADD COLUMN age integer;"
+  ]
+}
+```
 
-LinkedIn: https://www.linkedin.com/in/pavankumar-b-6754b9265
-Email: pavanbabunaik631@gmail.com
-⭐ Why This Project Matters
-Full-stack development
-FastAPI backend
-AI integration
-Authentication system
-Cloud deployment
-⭐ Support
+---
 
-⭐ Star this repo
-🔁 Share it
-💡 Use it
+## 🚀 How to Run Locally
+
+### 🔹 Clone repo
+
+```bash
+git clone https://github.com/Pavankumar876232/schemasync.git
+cd schemasync
+```
+
+---
+
+### 🔹 Backend Setup
+
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app:app --reload
+```
+
+---
+
+### 🔹 Frontend Setup
+
+```bash
+cd frontend
+npm install
+npm start
+```
+
+---
+
+### 🔹 Environment Variable
+
+Create `.env` or set:
+
+```
+DATABASE_URL=your_postgresql_connection_string
+```
+
+---
+
+## ☁️ Deployment
+
+* Backend → Render
+* Frontend → Vercel
+* Database → Supabase
+
+---
+
+## 📈 Future Improvements
+
+* 📦 Schema version history tracking
+* 🤖 LLM-based smart migration generation
+* 📊 Advanced UI dashboard
+* 🔐 Authentication & multi-user support
+
+---
+
+## 👨‍💻 Author
+
+**Pavankumar B**
+
+* LinkedIn: https://www.linkedin.com/in/pavankumar-b-6754b9265
+* Email: [pavanbabunaik631@gmail.com](mailto:pavanbabunaik631@gmail.com)
+
+---
+
+## ⭐ Conclusion
+
+SchemaSync simplifies database schema evolution by automating detection, validation, and migration — making systems more reliable and developer-friendly.
+
+---
+
+⭐ If you like this project, give it a star!
