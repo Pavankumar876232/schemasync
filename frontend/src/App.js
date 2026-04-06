@@ -8,12 +8,11 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
 
-  // 🔐 AUTH STATE
+  // 🔐 AUTH
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  // 🔹 Track session
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user || null);
@@ -24,14 +23,14 @@ function App() {
     });
   }, []);
 
-  // 🔹 AUTH FUNCTIONS
+  // 🔐 AUTH FUNCTIONS
   const signUp = async () => {
     const { error } = await supabase.auth.signUp({
       email,
       password
     });
     if (error) alert(error.message);
-    else alert("Signup successful! Now login.");
+    else alert("Signup successful! Please login.");
   };
 
   const login = async () => {
@@ -46,21 +45,12 @@ function App() {
     await supabase.auth.signOut();
   };
 
-  // 🔹 Format timestamp
-  const formatTime = (filename) => {
-    const raw = filename.replace("schema_", "").replace(".json", "");
-
-    const year = raw.slice(0, 4);
-    const month = raw.slice(4, 6);
-    const day = raw.slice(6, 8);
-    const hour = raw.slice(9, 11);
-    const min = raw.slice(11, 13);
-    const sec = raw.slice(13, 15);
-
-    return `${day}/${month}/${year} ${hour}:${min}:${sec}`;
+  // 🔹 FORMAT TIME
+  const formatTime = (timestamp) => {
+    return timestamp; // already formatted from backend
   };
 
-  // 🔹 Compare API
+  // 🔹 COMPARE
   const runCompare = async () => {
     try {
       setLoading(true);
@@ -70,7 +60,10 @@ function App() {
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(JSON.parse(schema))
+        body: JSON.stringify({
+          schema: JSON.parse(schema),
+          user_id: user.id
+        })
       });
 
       const data = await response.json();
@@ -82,18 +75,25 @@ function App() {
     }
   };
 
-  // 🔹 Load History
+  // 🔹 LOAD HISTORY (USER SPECIFIC)
   const loadHistory = async () => {
     try {
-      const res = await fetch("https://schemasync.onrender.com/history");
+      const res = await fetch("https://schemasync.onrender.com/history", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ user_id: user.id })
+      });
+
       const data = await res.json();
-      setHistory(data.versions || []);
+      setHistory(data.history || []);
     } catch (error) {
       alert("Error loading history");
     }
   };
 
-  // 🔐 LOGIN SCREEN
+  // 🔐 LOGIN UI
   if (!user) {
     return (
       <div className="container">
@@ -117,7 +117,7 @@ function App() {
     );
   }
 
-  // 🔓 MAIN APP
+  // 🔓 MAIN UI
   return (
     <div className="container">
       <h1>🚀 SchemaSync Dashboard</h1>
@@ -192,13 +192,18 @@ function App() {
         </div>
       )}
 
-      {/* TIMELINE */}
+      {/* 📦 USER HISTORY */}
       {history.length > 0 && (
         <div className="card">
-          <h3>📦 Schema Timeline</h3>
+          <h3>📦 Your Schema Timeline</h3>
+
           {history.map((item, index) => (
             <div key={index} className="timeline-item">
-              🟢 Schema updated at {formatTime(item)}
+              🟢 {formatTime(item.timestamp)} <br />
+
+              ➕ Added: {item.diff?.added?.join(", ") || "None"} <br />
+              ❌ Removed: {item.diff?.removed?.join(", ") || "None"} <br />
+              🔁 Modified: {item.diff?.modified?.join(", ") || "None"} <br />
             </div>
           ))}
         </div>

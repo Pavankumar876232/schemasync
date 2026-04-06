@@ -3,15 +3,11 @@ from fastapi.middleware.cors import CORSMiddleware
 import psycopg2
 import os
 
-# ✅ History
-from schema_versions.store import save_schema, get_all_versions
-
-# ✅ AI (LLM)
+from schema_versions.store import save_schema
 from llm.migration import generate_migration
 
 app = FastAPI()
 
-# ✅ CORS (for frontend)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,16 +16,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ DB connection
 def get_connection():
     return psycopg2.connect(os.environ.get("DATABASE_URL"))
 
-# ✅ Home
 @app.get("/")
 def home():
     return {"message": "SchemaSync Running"}
 
-# ✅ Get schema
+# 🔹 GET SCHEMA
 @app.get("/schema")
 def get_schema():
     conn = get_connection()
@@ -45,7 +39,6 @@ def get_schema():
     conn.close()
 
     schema = {}
-
     for table, column, dtype in rows:
         if table not in schema:
             schema[table] = {}
@@ -53,11 +46,13 @@ def get_schema():
 
     return schema
 
-
-# ✅ Compare API (MAIN)
+# 🔹 COMPARE
 @app.post("/compare")
 async def compare_schema(request: Request):
-    new_schema = await request.json()
+    data = await request.json()
+
+    new_schema = data.get("schema")
+    user_id = data.get("user_id")
 
     conn = get_connection()
     cursor = conn.cursor()
@@ -72,16 +67,12 @@ async def compare_schema(request: Request):
     conn.close()
 
     current_schema = {}
-
     for table, column, dtype in rows:
         if table not in current_schema:
             current_schema[table] = {}
         current_schema[table][column] = dtype
 
-    # --- DIFF ---
-    added = []
-    removed = []
-    modified = []
+    added, removed, modified = [], [], []
 
     for table in new_schema:
         if table not in current_schema:
@@ -103,33 +94,18 @@ async def compare_schema(request: Request):
         "modified": modified
     }
 
-    # --- COMPATIBILITY ---
     compatibility = []
 
     for col in added:
-        compatibility.append({
-            "column": col,
-            "status": "SAFE",
-            "message": "New column added"
-        })
+        compatibility.append({"column": col, "status": "SAFE"})
 
     for col in removed:
-        compatibility.append({
-            "column": col,
-            "status": "BREAKING",
-            "message": "Column removed"
-        })
+        compatibility.append({"column": col, "status": "BREAKING"})
 
     for col in modified:
-        compatibility.append({
-            "column": col,
-            "status": "WARNING",
-            "message": "Column type changed"
-        })
+        compatibility.append({"column": col, "status": "WARNING"})
 
-    # --- BASIC SQL ---
     migration_sql = []
-
     for table in new_schema:
         for col, dtype in new_schema[table].items():
             if table not in current_schema or col not in current_schema.get(table, {}):
@@ -137,16 +113,12 @@ async def compare_schema(request: Request):
                     f"ALTER TABLE {table} ADD COLUMN {col} {dtype};"
                 )
 
-    # ✅ SAVE HISTORY
-    save_schema(new_schema)
+    # ✅ SAVE USER DATA
+    save_schema(new_schema, diff, user_id)
 
-    # ✅ AI GENERATION (NEW)
-    try:
-        llm_output = generate_migration(diff)
-    except Exception as e:
-        llm_output = f"LLM Error: {str(e)}"
+    # ✅ AI
+    llm_output = generate_migration(diff)
 
-    # ✅ FINAL RESPONSE
     return {
         "diff": diff,
         "compatibility": compatibility,
@@ -154,10 +126,20 @@ async def compare_schema(request: Request):
         "llm_suggestion": llm_output
     }
 
+# 🔹 USER HISTORY
+@app.post("/history")
+async def get_history(request: Request):
+    data = await request.json()
+    user_id = data.get("user_id")
 
-# ✅ HISTORY API
-@app.get("/history")
-def history():
-    return {
-        "versions": get_all_versions()
-    }
+    import json
+
+    if not os.path.exists("schema_history.json"):
+        return {"history": []}
+
+    with open("schema_history.json", "r") as f:
+        all_data = json.load(f)
+
+    user_data = [item for item in all_data if item["user_id"] == user_id]
+
+    return {"history": user_data}

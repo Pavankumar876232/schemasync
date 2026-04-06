@@ -2,29 +2,23 @@ import json
 import os
 from datetime import datetime
 
-FOLDER = "schema_versions"
+HISTORY_FILE = "schema_history.json"
 
-def save_schema(schema):
-    if not os.path.exists(FOLDER):
-        os.makedirs(FOLDER)
+def save_schema(schema, diff, user_id):
+    history = []
 
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"{FOLDER}/schema_{timestamp}.json"
+    if os.path.exists(HISTORY_FILE):
+        with open(HISTORY_FILE, "r") as f:
+            history = json.load(f)
 
-    with open(filename, "w") as f:
-        json.dump(schema, f, indent=4)
+    entry = {
+        "user_id": user_id,
+        "timestamp": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+        "schema": schema,
+        "diff": diff
+    }
 
-    return filename
+    history.append(entry)
 
-
-def get_all_versions():
-    if not os.path.exists(FOLDER):
-        return []
-
-    files = os.listdir(FOLDER)
-
-    # ✅ filter only schema json files
-    schema_files = [f for f in files if f.endswith(".json")]
-
-    schema_files.sort(reverse=True)
-    return schema_files
+    with open(HISTORY_FILE, "w") as f:
+        json.dump(history, f, indent=4)
