@@ -11,14 +11,16 @@ Detects:
 Added columns
 Removed columns
 Modified columns
-Works directly with PostgreSQL (Supabase)
+Works with PostgreSQL (Supabase)
 ⚠️ Compatibility Analysis
-Classifies changes:
+Classifies schema changes:
 ✅ SAFE
 ⚠️ WARNING
 ❌ BREAKING
 🧾 Migration SQL Generator
-Automatically generates SQL like:
+
+Automatically generates SQL queries:
+
 ALTER TABLE users ADD COLUMN age INTEGER;
 🤖 AI Migration Suggestions
 Uses AI to:
@@ -27,22 +29,22 @@ Suggest safer migrations
 Explain impact of changes
 📦 Schema History (Per User)
 Stores schema versions
-Shows timeline of changes
-User-specific data using authentication
+Displays timeline of changes
+User-specific data isolation
 🔐 Authentication
 Secure login/signup using Supabase Auth
-Each user has isolated schema history
+Each user has their own schema history
 🛠️ Tech Stack
 Frontend
 React.js
-CSS (Custom UI)
+CSS
 Deployed on Vercel
 Backend
 FastAPI (Python)
 PostgreSQL (Supabase)
 psycopg2
 AI Integration
-OpenAI API (for migration suggestions)
+OpenAI API
 Deployment
 Frontend → Vercel
 Backend → Render
@@ -67,7 +69,7 @@ schemasync/
 └── README.md
 ⚙️ Setup Instructions
 1️⃣ Clone Repository
-git clone https://github.com/YOUR_USERNAME/schemasync.git
+git clone https://github.com/Pavankumar876232/schemasync.git
 cd schemasync
 2️⃣ Backend Setup
 cd backend
@@ -78,7 +80,7 @@ Create .env file:
 DATABASE_URL=your_supabase_connection_string
 OPENAI_API_KEY=your_openai_api_key
 
-Run server:
+Run backend:
 
 uvicorn app:app --reload
 3️⃣ Frontend Setup
@@ -90,7 +92,7 @@ Method	Endpoint	Description
 GET	/	Health check
 GET	/schema	Fetch DB schema
 POST	/compare	Compare schemas
-POST	/history	Get user history
+POST	/history	Get user schema history
 🧪 Example Input
 {
   "users": {
@@ -101,14 +103,14 @@ POST	/history	Get user history
 }
 📸 Screenshots
 
-👉 Add your UI screenshots here (important for recruiters)
+Add your UI screenshots here (very important for recruiters)
 
 🚀 Future Improvements
 Schema visualization (ER diagram)
 Rollback SQL generation
-Team collaboration
-Multi-database support (MySQL, MongoDB)
-Deployment monitoring dashboard
+Multi-database support
+Team collaboration features
+Advanced AI suggestions
 👨‍💻 Author
 
 Pavankumar B
@@ -119,17 +121,16 @@ Email: pavanbabunaik631@gmail.com
 
 This project demonstrates:
 
-✔ Full-stack development
-✔ API design with FastAPI
-✔ Database integration
-✔ AI integration in real-world use case
-✔ Authentication & multi-user system
-✔ Deployment (Vercel + Render + Supabase)
-
+Full-stack development
+API design with FastAPI
+Database integration
+AI integration in real-world use case
+Authentication & multi-user system
+Cloud deployment (Vercel + Render + Supabase)
 ⭐ Support
 
-If you like this project:
+If you found this useful:
 
-👉 Star ⭐ the repository
-👉 Share it
-👉 Use it in your projects
+⭐ Star this repository
+🔁 Share it
+💡 Use it in your projects
