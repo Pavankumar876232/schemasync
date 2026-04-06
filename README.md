@@ -112,6 +112,17 @@ AI Layer (OpenAI API)
   "llm_suggestion": "Safe migration detected. This change is backward compatible."
 }
 ```
+## 📸 Screenshots
+
+### 🔹 Dashboard
+![Dashboard](images/dashboard.png)
+
+---
+
+### 🔹 Schema Comparison Result
+![Result](images/result.png)
+
+---
 
 ---
 
