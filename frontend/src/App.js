@@ -1,47 +1,69 @@
 import React, { useState } from "react";
+import "./App.css";
 
 function App() {
   const [schema, setSchema] = useState("");
   const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const runCompare = async () => {
     try {
+      setLoading(true);
+
       const response = await fetch("https://schemasync.onrender.com/compare", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: schema
+        body: JSON.stringify(JSON.parse(schema))
       });
 
       const data = await response.json();
       setResult(data);
     } catch (error) {
-      console.error(error);
-      alert("Error connecting to backend");
+      alert("Invalid JSON or backend error");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>SchemaSync Dashboard</h1>
+    <div className="container">
+      <h1>🚀 SchemaSync Dashboard</h1>
 
-      <textarea
-        rows="10"
-        cols="50"
-        placeholder='Enter schema JSON...'
-        value={schema}
-        onChange={(e) => setSchema(e.target.value)}
-      />
+      {/* INPUT CARD */}
+      <div className="card">
+        <h3>Enter Schema</h3>
+        <textarea
+          placeholder="Paste schema JSON..."
+          value={schema}
+          onChange={(e) => setSchema(e.target.value)}
+        />
+        <button onClick={runCompare}>
+          {loading ? "Processing..." : "Run Compare"}
+        </button>
+      </div>
 
-      <br /><br />
-
-      <button onClick={runCompare}>Run Compare</button>
-
-      <br /><br />
-
+      {/* RESULTS */}
       {result && (
-        <pre>{JSON.stringify(result, null, 2)}</pre>
+        <div className="results">
+          
+          <div className="card">
+            <h3>📊 Diff</h3>
+            <pre>{JSON.stringify(result.diff, null, 2)}</pre>
+          </div>
+
+          <div className="card">
+            <h3>⚠️ Compatibility</h3>
+            <pre>{JSON.stringify(result.compatibility, null, 2)}</pre>
+          </div>
+
+          <div className="card">
+            <h3>🧾 Migration SQL</h3>
+            <pre>{JSON.stringify(result.migration_sql, null, 2)}</pre>
+          </div>
+
+        </div>
       )}
     </div>
   );
