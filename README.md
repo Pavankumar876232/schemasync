@@ -1,9 +1,9 @@
 🚀 SchemaSync — AI-Powered Schema Evolution Manager
 📌 Overview
 
-SchemaSync is a full-stack system that tracks database schema changes, detects differences, evaluates compatibility, and generates SQL migration scripts automatically — enhanced with AI-powered suggestions and user-based schema history.
+SchemaSync is a full-stack system that tracks database schema changes, detects differences, evaluates compatibility, and generates SQL migration scripts automatically.
 
-It helps developers safely evolve database schemas without breaking production systems.
+It is enhanced with AI-powered migration suggestions and user-based schema history, helping developers safely evolve database schemas without breaking production systems.
 
 🧠 Problem Statement
 
@@ -53,7 +53,7 @@ Language	Python, JavaScript
 ☁️ Fully deployed cloud system
 📸 Demo
 
-👉 Frontend: https://schemasync-five.vercel.app
+👉 Live Demo: https://schemasync-five.vercel.app
 
 👉 Backend API: https://schemasync.onrender.com
 
@@ -97,9 +97,9 @@ uvicorn app:app --reload
 cd frontend
 npm install
 npm start
-🔹 Environment Variables
+🔹 Environment Variable
 
-Create .env:
+Create .env file or set:
 
 DATABASE_URL=your_postgresql_connection_string
 OPENAI_API_KEY=your_openai_api_key
@@ -108,10 +108,10 @@ Backend → Render
 Frontend → Vercel
 Database → Supabase
 📈 Future Improvements
-📊 Schema visualization (ER diagrams)
+📊 Schema visualization (ER diagram)
 🔁 Rollback SQL generation
-🧠 Smarter AI suggestions (breaking-change detection)
-👥 Team collaboration support
+🧠 Smarter AI suggestions
+👥 Team collaboration
 🌍 Multi-database support
 👨‍💻 Author
 
@@ -121,6 +121,6 @@ LinkedIn: https://www.linkedin.com/in/pavankumar-b-6754b9265
 Email: pavanbabunaik631@gmail.com
 ⭐ Conclusion
 
-SchemaSync simplifies database schema evolution by combining automation + AI intelligence + user tracking, making database migrations safer, faster, and more reliable.
+SchemaSync simplifies database schema evolution by combining automation, AI intelligence, and user tracking, making migrations safer, faster, and more reliable.
 
 ⭐ If you like this project, give it a star!
